@@ -12,6 +12,6 @@ interface ShopListRepository {
 
     fun getShopItemUseCase(shopItemId: Int): ShopItem
 
-    fun getShopList(): List<ShopItem>
+    fun getShopList(): LiveData<List<ShopItem>>
 
 }
