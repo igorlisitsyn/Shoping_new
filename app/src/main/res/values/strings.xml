@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Shoping</string>
+    <string name="newshow">Добавление новой записи</string>
+
 </resources>
