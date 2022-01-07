@@ -23,6 +23,8 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
    // var onShopItemLongClick: OnShopItemLongClickListener? = null
     // вариант kotlin через лямбда функцию
     var onShopItemLongClick: ((ShopItem) -> Unit)? = null
+    //определяем для короткого нажатия
+    var onShopItemClick: ((ShopItem) -> Unit)? = null
 
     class ShopItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvName = itemView.findViewById<TextView>(R.id.tv_name)
@@ -57,6 +59,10 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
            // onShopItemLongClick?.onSopItemLongClick(shopItem)
            onShopItemLongClick?.invoke(shopItem)
             true
+        }
+        //метод короткого нажатия на выбранный элемент
+        holder.itemView.setOnClickListener {
+            onShopItemClick?.invoke(shopItem)
         }
         /*val status = if (shopItem.enabled) {
             "Активная запись"
