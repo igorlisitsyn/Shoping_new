@@ -32,30 +32,38 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     }*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
+        // определяем условие вызова layout
+        val layoutGet = when (viewType) {
+            VIEW_TYPE_ENABLED -> R.layout.item_shop_enabled
+            VIEW_TYPE_DISABLED -> R.layout.item_shop_disabled
+            else -> throw RuntimeException("Unknown view type: $viewType")
+        }
+
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_shop_disabled, parent, false)
+            LayoutInflater.from(parent.context).inflate(layoutGet, parent, false)
 
         return ShopItemViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
         val shopItem = shoplist[position]
-        /*holder.tvName.text = shopItem.name
+        holder.tvName.text = shopItem.name
         holder.tvCount.text = shopItem.count.toString()
         holder.itemView.setOnLongClickListener {
             true
-        }*/
-        val status = if (shopItem.enabled) {
+        }
+        /*val status = if (shopItem.enabled) {
             "Активная запись"
         } else {
             "Пассивная запись"
-        }
+        }*/
 
         // recyclerView - использует повторно view поэтому при установке по значению
         // повторно вызываются viewHolder
         // поэтому необходимо восстанавливать предыдущие значения holder
 
-        if (shopItem.enabled) {
+        // пример
+        /*if (shopItem.enabled) {
             holder.tvName.text = "${shopItem.name} $status"
             holder.tvCount.text = shopItem.count.toString()
             holder.tvName.setTextColor(ContextCompat.getColor(holder.itemView.context, android.R.color.holo_blue_light))
@@ -63,13 +71,33 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
             holder.tvName.text = "${shopItem.name} $status"
             holder.tvCount.text = shopItem.count.toString()
             holder.tvName.setTextColor(ContextCompat.getColor(holder.itemView.context, android.R.color.white))
-        }
+        }*/
 
     }
 
 
     override fun getItemCount(): Int {
         return shoplist.size
+    }
+
+
+    // позволяет использовать viewType в ViewHolder
+    // реализуем логику возврата значения viewType в ViewHolder
+    // количество обращений для создания нового ViewHolder не уменьшается
+    override fun getItemViewType(position: Int): Int {
+        val iten = shoplist[position]
+        return if (iten.enabled) {
+            VIEW_TYPE_ENABLED
+        } else {
+            VIEW_TYPE_DISABLED
+        }
+    }
+    // определяем константы
+    companion object {
+        const val VIEW_TYPE_ENABLED = 0
+        const val VIEW_TYPE_DISABLED = 1
+
+        const val MAX_POOL_SIZE = 15 // количество ViewHolder созданных заранее
     }
 
 }
