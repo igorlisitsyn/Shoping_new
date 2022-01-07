@@ -47,15 +47,16 @@ class MainActivity : AppCompatActivity() {
         }*/
 
         // это вариант через лямбду
-        shopListAdapter.onShopItemLongClick = {
-            viewModel.changeEnableState(it)
-        }
+        setupLongClickListener()
         //короткое нажатие
-        shopListAdapter.onShopItemClick = {
-
-        }
+        setupClickListener()
         //реализация удаления по свайпу (движение в лево, право)
-        val callback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT){
+        setupSwipedListener(rvShopList)
+    }
+
+    private fun setupSwipedListener(rvShopList: RecyclerView) {
+        val callback = object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -65,7 +66,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val item = shopListAdapter.shoplist[viewHolder.adapterPosition]//получаем элемент по его позиции
+                val item =
+                    shopListAdapter.shoplist[viewHolder.adapterPosition]//получаем элемент по его позиции
                 viewModel.deleteShopItem(item)
             }
 
@@ -73,5 +75,17 @@ class MainActivity : AppCompatActivity() {
 
         val itemTouchHelper = ItemTouchHelper(callback)
         itemTouchHelper.attachToRecyclerView(rvShopList)
+    }
+
+    private fun setupClickListener() {
+        shopListAdapter.onShopItemClick = {
+
+        }
+    }
+
+    private fun setupLongClickListener() {
+        shopListAdapter.onShopItemLongClick = {
+            viewModel.changeEnableState(it)
+        }
     }
 }
