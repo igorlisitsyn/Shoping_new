@@ -20,6 +20,10 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
             notifyDataSetChanged()
         }
 
+   // var onShopItemLongClick: OnShopItemLongClickListener? = null
+    // вариант kotlin через лямбда функцию
+    var onShopItemLongClick: ((ShopItem) -> Unit)? = null
+
     class ShopItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvName = itemView.findViewById<TextView>(R.id.tv_name)
         val tvCount = itemView.findViewById<TextView>(R.id.tv_count)
@@ -50,6 +54,8 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         holder.tvName.text = shopItem.name
         holder.tvCount.text = shopItem.count.toString()
         holder.itemView.setOnLongClickListener {
+           // onShopItemLongClick?.onSopItemLongClick(shopItem)
+           onShopItemLongClick?.invoke(shopItem)
             true
         }
         /*val status = if (shopItem.enabled) {
@@ -98,6 +104,14 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         const val VIEW_TYPE_DISABLED = 1
 
         const val MAX_POOL_SIZE = 15 // количество ViewHolder созданных заранее
+    }
+
+    //так как из адаптера не можем работать с ViewModel
+    // реализация осуществляется через интерфейс
+    interface OnShopItemLongClickListener {
+
+        fun onSopItemLongClick(shopItem: ShopItem)
+
     }
 
 }
