@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoping.R
 import com.example.shoping.domain.ShopItem
@@ -16,8 +17,15 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     var shoplist = listOf<ShopItem>()
         // @SuppressLint("NotifyDataSetChanged")
         set(value) {
+            val callback = ShopListDiffCallback(shoplist, value)
+            val diffResult = DiffUtil.calculateDiff(callback) // проводится расчет были ли изменения
+            diffResult.dispatchUpdatesTo(this) // передаем изменения адаптеру, так как внутри адаптера то this
             field = value
-            notifyDataSetChanged()
+                //  notifyDataSetChanged() //проблема с данным методом связана, что когда идет удаление, редактирование
+                                  // идет новая перерисовка всех холдеров. для этого нужно как то уведомить
+                                 //адартер о необходимости сравнения списков, старого и нового
+                                //для этой реализации создается класс callback (ShopListDiffCallback)
+                                // который и будет сравнивать списки
         }
 
    // var onShopItemLongClick: OnShopItemLongClickListener? = null
