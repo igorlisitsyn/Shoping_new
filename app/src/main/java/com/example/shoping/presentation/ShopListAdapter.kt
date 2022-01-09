@@ -8,14 +8,19 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoping.R
 import com.example.shoping.domain.ShopItem
 
-class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
-
-    var shoplist = listOf<ShopItem>()
-        // @SuppressLint("NotifyDataSetChanged")
+//class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
+class ShopListAdapter : ListAdapter<ShopItem, ShopItemViewHolder>(ShopItemDiffCallback()) {
+    // после определения ListAdapter следующая логика не нужна
+    /*var shoplist = listOf<ShopItem>()
+        // так как calculateDiff выполняется в главном потоке, то на слабых устройствах будут замедления
+        // существует решение - высисления проводить в другом потоке и сравнивать не списки а значения
+        // создаем класс ShopItemDiffCallback
+        // вносим изменения в наследование адаптера - не от RecyclerView.Adapter а от ListAdapter
         set(value) {
             val callback = ShopListDiffCallback(shoplist, value)
             val diffResult = DiffUtil.calculateDiff(callback) // проводится расчет были ли изменения
@@ -26,7 +31,7 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
                                  //адартер о необходимости сравнения списков, старого и нового
                                 //для этой реализации создается класс callback (ShopListDiffCallback)
                                 // который и будет сравнивать списки
-        }
+        }*/
 
    // var onShopItemLongClick: OnShopItemLongClickListener? = null
     // вариант kotlin через лямбда функцию
@@ -34,11 +39,7 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     //определяем для короткого нажатия
     var onShopItemClick: ((ShopItem) -> Unit)? = null
 
-    class ShopItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvName = itemView.findViewById<TextView>(R.id.tv_name)
-        val tvCount = itemView.findViewById<TextView>(R.id.tv_count)
 
-    }
 
     /*class ShopItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
         val tvName = view.findViewById<TextView>(R.id.tv_name)
@@ -60,7 +61,8 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
-        val shopItem = shoplist[position]
+        //val shopItem = shoplist[position]
+        val shopItem = getItem(position) // используем метод из ListAdapter - для получения элемента по позиции
         holder.tvName.text = shopItem.name
         holder.tvCount.text = shopItem.count.toString()
         holder.itemView.setOnLongClickListener {
@@ -95,17 +97,19 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
 
     }
 
+    /*// прииспользовании ListAdapter этот метод можно не определять
 
     override fun getItemCount(): Int {
         return shoplist.size
-    }
+    }*/
 
 
     // позволяет использовать viewType в ViewHolder
     // реализуем логику возврата значения viewType в ViewHolder
     // количество обращений для создания нового ViewHolder не уменьшается
     override fun getItemViewType(position: Int): Int {
-        val iten = shoplist[position]
+        //val iten = shoplist[position]
+        val iten = getItem(position)
         return if (iten.enabled) {
             VIEW_TYPE_ENABLED
         } else {
