@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Shoping</string>
     <string name="newshow">Добавление новой записи</string>
-
+    <string name="name_hint">Наименование</string>
+    <string name="count_hint">Количество</string>
+    <string name="save_btn">Сохранить</string>
 </resources>

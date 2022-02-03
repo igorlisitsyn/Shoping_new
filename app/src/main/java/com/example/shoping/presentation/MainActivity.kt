@@ -1,5 +1,6 @@
 package com.example.shoping.presentation
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -7,7 +8,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoping.R
-import com.example.shoping.domain.ShopItem
+//import com.example.shoping.domain.ShopItem
+//import com.example.shoping.presentation.ShopItemActivity.Companion.EXTRA_SCREEN_MODE
+//import com.example.shoping.presentation.ShopItemActivity.Companion.MODE_ADD
+//import com.example.shoping.presentation.ShopItemActivity.Companion.MODE_EDIT
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,10 +25,18 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerView()
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.shopList.observe(this){
-            Log.d("MainActivityTest",it.toString())
+           // Log.d("MainActivityTest",it.toString())
             //shopListAdapter.shoplist = it
             // изменение после ListAdapter
             shopListAdapter.submitList(it)
+        }
+
+        val buttonAddItem = findViewById<FloatingActionButton>(R.id.button_add_shop_item)
+        buttonAddItem.setOnClickListener {
+            //val intent = Intent(this, ShopItemActivity::class.java) // запускаем вторую активити
+            //intent.putExtra(EXTRA_SCREEN_MODE, MODE_ADD)
+            val intent = ShopItemActivity.newIntentAddItem(this) // после создания публичной фу-ции в ShopItemActivity
+            startActivity(intent)
         }
 
     }
@@ -83,6 +96,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupClickListener() {
         shopListAdapter.onShopItemClick = {
+            //val intent = Intent(this, ShopItemActivity::class.java)
+            //intent.putExtra(EXTRA_SCREEN_MODE, MODE_EDIT)
+            val intent = ShopItemActivity.newIntentEditItem(this, it.id)
+            startActivity(intent)
 
         }
     }
